@@ -5,7 +5,7 @@ import random
 import time
 
 def pathinput():
-    print("Numbered Folder sorter. \n basically sorts a number of files into numbered files. \n example: folder 1 has 4240 files and you specify that every folder only needs 1000 files \n this script automatically creates new folders and sorts them. \n DISCLAIMER: i have no idea how to optimize this since this is my first python script.")    
+    print("Numbered Folder sorter. \n basically sorts a number of files into numbered files. \n example: folder 1 has 4240 files and you specify that every folder only needs 1000 files \n this script automatically creates new folders and sorts them. \n DISCLAIMER: i have no idea how to optimize this since this is my first python script. \n")    
     while True:
         user_input = input("folder that contains numbered folders: ")
         if os.path.exists(user_input) == False:
@@ -64,7 +64,10 @@ sortthis, sortinto = finalsort()
 while len(sortthis) != False: 
     directorysorted = sortdirectorylist()
     sortthis, sortinto = finalsort()
-    files = os.listdir(user_input + ("\\") + str(sortthis[0]))
+    try:
+        files = os.listdir(user_input + ("\\") + str(sortthis[0]))
+    except:
+        print("FINISHED.")
     file = random.choice(files)
     #sortinto2 = os.path.join(user_input, str(sortinto[0]))
     #print (file)
