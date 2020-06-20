@@ -71,20 +71,16 @@ while len(sortthis) != False:
     sortthis, sortinto = finalsort()
     try:
         files = os.listdir(user_input + ("\\") + str(sortthis[0]))
+        file = random.choice(files)
+        if len(sortinto) == False:
+            lastdir = int(directorysorted[-1])
+            makedir = lastdir + 1
+            os.mkdir(os.path.join(user_input, str(makedir)))
+        else:
+            sortinto2 = os.path.join(user_input, str(sortinto[0]))
+            shutil.move(os.path.join(user_input, str(sortthis[0]), file), sortinto2)
     except:
-        print("FINISHED.")
-    file = random.choice(files)
-    #sortinto2 = os.path.join(user_input, str(sortinto[0]))
-    #print (file)
-    #print (sortinto2)    
-    #shutil.move(os.path.join(user_input, str(sortthis[0]), file), sortinto2)
-    if len(sortinto) == False:
-        lastdir = int(directorysorted[-1])
-        makedir = lastdir + 1
-        os.mkdir(os.path.join(user_input, str(makedir)))
-    else:
-        sortinto2 = os.path.join(user_input, str(sortinto[0]))
-        shutil.move(os.path.join(user_input, str(sortthis[0]), file), sortinto2)
+        break
 print("Finished / Nothing to sort.")
 
 
