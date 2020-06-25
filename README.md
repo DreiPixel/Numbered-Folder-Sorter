@@ -4,6 +4,7 @@ basically sorts a number of files into numbered Folder.
 it's almost completely random how it sorts the files.
 this script is for archiving intended where you dont really care where the files are.
 it only sorts folders that are only numbers. it will ignore any folder with any non digit character in it (except if you input a source folder)
+it doesn't rename files. only when a file already exists in a folder it wants to sort into (it only adds random numbers on the end of the file)
 
 Only Tested on Windows.
 
