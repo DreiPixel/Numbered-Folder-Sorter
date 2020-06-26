@@ -63,7 +63,7 @@ if os.path.exists(user_source) == True:
                 except:
                     checksum = crc32(os.path.join(user_source, f))
                     filename, fileext = os.path.splitext(f)
-                    print(" File " + f + " already existed in " + os.path.join(user_input, str(directorysorted[0])) + "\n", " replaced filename with " + filename + " - " + checksum + fileext)
+                    print("File " + f + " already existed in " + os.path.join(user_input, str(directorysorted[0])) + "\n", " replaced filename with " + filename + " - " + checksum + fileext)
                     shutil.move(os.path.join(user_source, f), os.path.join(user_input, str(directorysorted[0]), filename + " - " + checksum + fileext))
             break
         else:
@@ -130,7 +130,7 @@ while len(sortinto) > 1:
         except:
             checksum = crc32(os.path.join(user_input, str(sortinto[-1]), file))
             filename, fileext = os.path.splitext(file)
-            print(" File " + file + " already existed in " + os.path.join(user_input, str(sortinto[0])) + "\n" + " replaced filename with " + filename + " - " + checksum + fileext)
+            print("File " + file + " already existed in " + os.path.join(user_input, str(sortinto[0])) + "\n" + " replaced filename with " + filename + " - " + checksum + fileext)
             shutil.move(os.path.join(user_input, str(sortinto[-1]), file), os.path.join(user_input, str(sortinto[0]), filename + " - " + checksum + fileext))
 
 
@@ -153,12 +153,12 @@ while len(sortthis) != False:
             except:
                 checksum = crc32(os.path.join(user_input, str(sortthis[0]), file))
                 filename, fileext = os.path.splitext(file)
-                print(" File " + file + " already existed in " + os.path.join(user_input, str(sortinto[0])) + "\n" + " replaced filename with " + filename + " - " + checksum + fileext)
+                print("File " + file + " already existed in " + os.path.join(user_input, str(sortinto[0])) + "\n" + " replaced filename with " + filename + " - " + checksum + fileext)
                 shutil.move(os.path.join(user_input, str(sortthis[0]), file), os.path.join(sortinto2, filename + " - " + checksum + fileext))
     except:
         break
 
-print("\n Finished / Nothing to sort.")
+print("\n---Finished / Nothing to sort.---")
 
 
 
