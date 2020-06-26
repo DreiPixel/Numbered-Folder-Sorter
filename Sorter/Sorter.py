@@ -4,13 +4,13 @@ import shutil
 import random
 import zlib
 
-print(" Numbered Folder sorter. \n basically sorts a number of files into numbered files. \n example: folder 1 has 4240 files and you specify that every folder only needs 1000 files \n this script automatically creates new folders and sorts them. \n if a folder is inside a numbered folder it treats it as a file so it gets sorted. \n it ignores any folder that is not numbered in the main folder.\n DISCLAIMER: i have no idea how to optimize this since this is my first python script. \n")
+print("Numbered Folder sorter. \nbasically sorts a number of files into numbered files. \nexample: folder 1 has 4240 files and you specify that every folder only needs 1000 files \nthis script automatically creates new folders and sorts them. \nif a folder is inside a numbered folder it treats it as a file so it gets sorted. \nit ignores any folder that is not numbered in the main folder.\nDISCLAIMER: i have no idea how to optimize this since this is my first python script. \n")
 
 #This ask the user for a Valid path.
 while True:
-    user_input = input(" folder that contains numbered folders: \n ")
+    user_input = input("folder that contains numbered folders: \n ")
     if os.path.exists(user_input) == False:
-        print("path not found: " + str(user_input))
+        print("path not found: " + str(user_input) + "\n ")
     else:
         directory = os.listdir(user_input)
         break
@@ -19,10 +19,10 @@ while True:
 #This ask the user for a Valid number of files
 while True:
     try:
-        file_amount = int(input(" how many files in a folder?: \n "))
+        file_amount = int(input("how many files in a folder?: \n "))
         break
     except ValueError:
-        print(" not a number")
+        print("not a number \n")
 
 #This sorts the Folders so thats it is not 1 10 11
 directorysorted = []
@@ -33,7 +33,7 @@ for item in directory:
 directorysorted.sort(key=lambda line: int(line.split()[0]))
 
 #This ask the user for any folder number that is should ignore and removes it from the list.
-user_exceptions = input(" Any folders i should ignore? separate with space (example: 1 2 5 7) :\n ")
+user_exceptions = input("Any folders i should ignore? separate with space (example: 1 2 5 7) :\n ")
 if len(user_exceptions) == True:
     userList = user_exceptions.split(" ")
     directorysorted = [x for x in directorysorted if x not in userList]
@@ -51,8 +51,7 @@ def crc32(fileName):
         return "%08X" % (hash & 0xFFFFFFFF)
 
 #this ask the user for a source folder and moves them into the folder 1. if it doesn't exists it will create it in the user input directory
-
-user_source = input(" Any input folder? (if a folder is here it will take all files and puts them into the folder 1): \n ")
+user_source = input("Any input folder? (if a folder is here it will take all files and puts them into the folder 1): \n ")
 if os.path.exists(user_source) == True:
     filessource = os.listdir(user_source)
     while True:
@@ -79,7 +78,7 @@ def listfiles(n):
 
 
 
-# This decides what folder to take from and what folder to sort into
+# This decides what folder to take from and what folder to sort into and what folders to delete (when they are empty)
 def finalsort():
     i = 0
     amount = len(directorysorted)
@@ -98,16 +97,30 @@ def finalsort():
 
 
 
+#this deletes empty folders
 sortthis, sortinto, empty = finalsort()
+while len(empty) != False:
+    shutil.rmtree(os.path.join(user_input, str(empty[0])))
+    directorysorted.remove(empty[0])
+    empty.pop(0)
 
-#this checks for empty folder and deletes them (we dont really need them) and sorts folders that are lower than the designated number so that every folder exact number of the wanted files in a folder
+#this fils empty space of folder so we dont have 13 16 17
+for i in range(len(directorysorted)):
+    foldercheck = i + 1
+    if foldercheck != int(directorysorted[i]):
+        os.mkdir(os.path.join(user_input, str(foldercheck)))
+        directorysorted.insert(i, str(foldercheck))
 
+#sorts folders that are lower than the designated number so that every folder exact number of the wanted files in a folder
+sortthis, sortinto, empty = finalsort()
 while len(sortinto) > 1:
     sortthis, sortinto, empty = finalsort()
-    while len(empty) != False:
-        shutil.rmtree(os.path.join(user_input, str(empty[0])))
-        directorysorted.remove(empty[0])
-        empty.pop(0)
+    if listfiles(int(sortinto[-1]) - 1) == 0:
+        shutil.rmtree(os.path.join(user_input, str(sortinto[-1])))
+        directorysorted.pop(int(sortinto[-1]) - 1)
+        sortinto.pop(-1)
+    if len(sortinto) == 1:
+        break
     sortthis, sortinto, empty = finalsort()
     files = os.listdir(user_input + ("\\") + str(sortinto[-1]))
     file = random.choice(files)
