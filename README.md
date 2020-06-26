@@ -1,5 +1,7 @@
 # Numbered Folder Sorter
 
+YOU NEED PYTHON3. 
+
 basically sorts a number of files into numbered Folder.
 it's almost completely random how it sorts the files.
 this script is for archiving intended where you dont really care where the files are.
