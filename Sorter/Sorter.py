@@ -2,7 +2,7 @@ import os
 import sys
 import shutil
 import random
-
+import zlib
 
 print(" Numbered Folder sorter. \n basically sorts a number of files into numbered files. \n example: folder 1 has 4240 files and you specify that every folder only needs 1000 files \n this script automatically creates new folders and sorts them. \n if a folder is inside a numbered folder it treats it as a file so it gets sorted. \n it ignores any folder that is not numbered in the main folder.\n DISCLAIMER: i have no idea how to optimize this since this is my first python script. \n")
 
@@ -39,7 +39,19 @@ if len(user_exceptions) == True:
     directorysorted = [x for x in directorysorted if x not in userList]
 
 
+#we are gonna check the CRC of a fi if it already exist in a folder
+def crc32(fileName):
+    with open(fileName, 'rb') as fh:
+        hash = 0
+        while True:
+            s = fh.read(65536)
+            if not s:
+                break
+            hash = zlib.crc32(s, hash)
+        return "%08X" % (hash & 0xFFFFFFFF)
+
 #this ask the user for a source folder and moves them into the folder 1. if it doesn't exists it will create it in the user input directory
+
 user_source = input(" Any input folder? (if a folder is here it will take all files and puts them into the folder 1): \n ")
 if os.path.exists(user_source) == True:
     filessource = os.listdir(user_source)
@@ -50,9 +62,10 @@ if os.path.exists(user_source) == True:
                 try:
                     shutil.move(os.path.join(user_source, f), os.path.join(user_input, str(directorysorted[0])))
                 except:
-                    randomnumber = str(random.getrandbits(20))
-                    print(" File " + f + " already existed in " + os.path.join(user_input, str(directorysorted[0])) + "\n", "replaced filename with " + f, " - " + randomnumber)
-                    shutil.move(os.path.join(user_source, f), os.path.join(user_input, str(directorysorted[0]), f + " - " + randomnumber))
+                    checksum = crc32(os.path.join(user_source, f))
+                    filename, fileext = os.path.splitext(f)
+                    print(" File " + f + " already existed in " + os.path.join(user_input, str(directorysorted[0])) + "\n", " replaced filename with " + filename + " - " + checksum + fileext)
+                    shutil.move(os.path.join(user_source, f), os.path.join(user_input, str(directorysorted[0]), filename + " - " + checksum + fileext))
             break
         else:
             os.mkdir(os.path.join(user_input, str(1)))
@@ -62,6 +75,8 @@ if os.path.exists(user_source) == True:
 def listfiles(n):
     d = len(os.listdir(user_input + ("\\") + str(directorysorted[n])))
     return d
+
+
 
 
 # This decides what folder to take from and what folder to sort into
@@ -100,9 +115,11 @@ while len(sortinto) > 1:
         try:
             shutil.move(os.path.join(user_input, str(sortinto[-1]), file), os.path.join(user_input, str(sortinto[0])))
         except:
-            randomnumber = str(random.getrandbits(20))
-            print(" File " + file + " already existed in " + os.path.join(user_input, str(sortinto[0])) + "\n", "replaced filename with " + file, " - " + randomnumber)
-            shutil.move(os.path.join(user_input, str(sortinto[-1]), file), os.path.join(user_input, str(sortinto[0]), file + " - " + randomnumber))
+            checksum = crc32(os.path.join(user_input, str(sortinto[-1]), file))
+            filename, fileext = os.path.splitext(file)
+            print(" File " + file + " already existed in " + os.path.join(user_input, str(sortinto[0])) + "\n" + " replaced filename with " + filename + " - " + checksum + fileext)
+            shutil.move(os.path.join(user_input, str(sortinto[-1]), file), os.path.join(user_input, str(sortinto[0]), filename + " - " + checksum + fileext))
+
 
 
 #this is the final execution and decides what file to move per random and puts it into the first "empty" folder until it hits the designated number
@@ -121,13 +138,14 @@ while len(sortthis) != False:
                 sortinto2 = os.path.join(user_input, str(sortinto[0]))
                 shutil.move(os.path.join(user_input, str(sortthis[0]), file), sortinto2)
             except:
-                randomnumber = str(random.getrandbits(20))
-                print(" File " + file + " already existed in " + os.path.join(user_input, str(sortinto[0])) + "/n", "replaced filename with " + file, " - " + randomnumber)
-                shutil.move(os.path.join(user_input, str(sortthis[0]), file), os.path.join(sortinto2, file) + " - " + randomnumber)
+                checksum = crc32(os.path.join(user_input, str(sortthis[0]), file))
+                filename, fileext = os.path.splitext(file)
+                print(" File " + file + " already existed in " + os.path.join(user_input, str(sortinto[0])) + "\n" + " replaced filename with " + filename + " - " + checksum + fileext)
+                shutil.move(os.path.join(user_input, str(sortthis[0]), file), os.path.join(sortinto2, filename + " - " + checksum + fileext))
     except:
         break
 
-print(" Finished / Nothing to sort.")
+print("\n Finished / Nothing to sort.")
 
 
 
